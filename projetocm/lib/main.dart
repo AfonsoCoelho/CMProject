@@ -56,7 +56,7 @@ class HomePage extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.help_outline), // Ícone vazio (placeholder)
+            icon: Image.asset('assets/tesouro.png'), // Ícone de tesouro
             onPressed: () {
               // Navegar para a página do jogo
               Navigator.push(
@@ -66,7 +66,7 @@ class HomePage extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.more_horiz), // Ícone vazio (placeholder)
+            icon: Image.asset('assets/transformacao.png'), // Ícone de transformação
             onPressed: () {
               // Navegar para a página do transformacao
               Navigator.push(
@@ -79,7 +79,7 @@ class HomePage extends StatelessWidget {
       ),
       body: Center(
         child: Image.asset(
-          'assets/splash.png', // Caminho da imagem
+          'assets/bg.png', // Caminho da imagem
           fit: BoxFit.cover, // Ajusta a imagem ao tamanho do widget
         ),
       ),

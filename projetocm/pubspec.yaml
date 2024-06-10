@@ -90,4 +90,6 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
   assets:
-    - assets/splash.png
+    - assets/bg.png
+    - assets/tesouro.png
+    - assets/transformacao.png
