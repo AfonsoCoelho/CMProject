@@ -9,7 +9,7 @@ class LojaPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Loja'),
         backgroundColor: const Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
-        leading: IconButton( // Botão para voltar à página anterior (neste caso, a página inicial)
+        leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
@@ -18,6 +18,7 @@ class LojaPage extends StatelessWidget {
       ),
       body: Stack(
         children: [
+          // Imagem de fundo
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -26,50 +27,72 @@ class LojaPage extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
+          // Conteúdo da página
+          SingleChildScrollView(
             padding: const EdgeInsets.all(20.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   flex: 2,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container( // Container rosa bebê em torno do texto
+                      // Container ao redor do texto
+                      Container(
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFC0CB), // Cor de fundo rosa bebê
                           borderRadius: BorderRadius.circular(10), // Borda arredondada
                         ),
-                        child: Text(
+                        child: const Text(
                           'Escolha a roupa para o Chopper:',
-                          style: const TextStyle(
-                            fontSize: 30,
+                          style: TextStyle(
+                            fontSize: 20, // Tamanho do texto menor para caber melhor
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Lógica para comprar a primeira roupa
-                        },
-                        child: Text('Roupa 1'), // Texto do botão
-                      ),
-                      SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Lógica para comprar a segunda roupa
-                        },
-                        child: Text('Roupa 2'), // Texto do botão
+                      const SizedBox(height: 20),
+                      // Botões com imagens organizados em uma grade 3x2
+                      GridView.count(
+                        crossAxisCount: 3, // Número de colunas
+                        shrinkWrap: true, // Evita que o GridView ocupe mais espaço do que necessário
+                        crossAxisSpacing: 10, // Espaçamento horizontal entre os botões
+                        mainAxisSpacing: 10, // Espaçamento vertical entre os botões
+                        physics: const NeverScrollableScrollPhysics(), // Desabilita a rolagem do GridView
+                        children: List.generate(6, (index) {
+                          return AspectRatio(
+                            aspectRatio: 1, // Mantém os botões quadrados
+                            child: TextButton(
+                              onPressed: () {
+                                // Lógica para comprar a roupa index + 1
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero, // Remove o padding interno
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10), // Borda arredondada
+                                  border: Border.all(color: Colors.transparent), // Sem borda visível
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.asset(
+                                    'assets/roupa${index + 1}.png', // Substitua pelo caminho das imagens de roupa
+                                    fit: BoxFit.cover, // Ajusta a imagem para cobrir todo o botão
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
                       ),
                     ],
                   ),
                 ),
+                const SizedBox(width: 20), // Espaço entre o grid e o Chopper
                 Expanded(
                   flex: 1,
                   child: Image.asset(
