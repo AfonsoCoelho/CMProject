@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'store.dart';
+import 'inventory.dart';
+import 'profile.dart';
+import 'minigame.dart';
+import 'transformation.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,83 +19,220 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  double _hungerLevel = 0.5;
+  final double _happinessLevel = 0.8;
+
+  void _showFoodOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  // Lógica para alimentar com comida 1
+                  setState(() {
+                    _hungerLevel += 0.1;
+                    if (_hungerLevel > 1.0) _hungerLevel = 1.0;
+                  });
+                  Navigator.pop(context);
+                },
+                child: Image.asset('assets/comida1.png'), // Imagem da comida 1
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Lógica para alimentar com comida 2
+                  setState(() {
+                    _hungerLevel += 0.2;
+                    if (_hungerLevel > 1.0) _hungerLevel = 1.0;
+                  });
+                  Navigator.pop(context);
+                },
+                child: Image.asset('assets/comida2.png'), // Imagem da comida 1
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Lógica para alimentar com comida 3
+                  setState(() {
+                    _hungerLevel += 0.3;
+                    if (_hungerLevel > 1.0) _hungerLevel = 1.0;
+                  });
+                  Navigator.pop(context);
+                },
+                child: Image.asset('assets/comida3.png'), // Imagem da comida 1
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tony Tony Chopper'),
-        backgroundColor: Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
+        title: const Text('Tony Tony Chopper'),
+        backgroundColor: const Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
         actions: [
           IconButton(
-            icon: Icon(Icons.store), // Ícone da loja
+            icon: const Icon(Icons.store),
             onPressed: () {
-              // Navegar para a página da loja
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => LojaPage()),
+                MaterialPageRoute(builder: (context) => const LojaPage()),
               );
             },
           ),
           IconButton(
-            icon: Icon(Icons.inventory), // Ícone do inventário
+            icon: const Icon(Icons.inventory),
             onPressed: () {
-              // Navegar para a página do inventário
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => InventarioPage()),
+                MaterialPageRoute(builder: (context) => const InventarioPage()),
               );
             },
           ),
           IconButton(
-            icon: Icon(Icons.person), // Ícone do perfil
+            icon: const Icon(Icons.person),
             onPressed: () {
-              // Navegar para a página do perfil
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PerfilPage()),
+                MaterialPageRoute(builder: (context) => const PerfilPage()),
               );
             },
           ),
           IconButton(
-            icon: Image.asset('assets/tesouro.png'), // Ícone de tesouro
+            icon: Image.asset('assets/tesouro.png'),
             onPressed: () {
-              // Navegar para a página do jogo
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => GamePage()),
+                MaterialPageRoute(builder: (context) => const MiniJogoPage()),
               );
             },
           ),
           IconButton(
-            icon: Image.asset('assets/transformacao.png'), // Ícone de transformação
+            icon: Image.asset('assets/transformacao.png'),
             onPressed: () {
-              // Navegar para a página do transformacao
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => TransformationPage()),
+                MaterialPageRoute(builder: (context) => const TransformationPage()),
               );
             },
           ),
         ],
       ),
-      body: Center(
-        child: Image.asset(
-          'assets/bg.png', // Caminho da imagem
-          fit: BoxFit.cover, // Ajusta a imagem ao tamanho do widget
-        ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/bg.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Center(
+            child: Image.asset(
+              'assets/chopper1.png',
+              width: 600,
+              height: 600,
+            ),
+          ),
+          Positioned(
+            bottom: 10,
+            left: 10,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Fome',
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        offset: Offset(1.0, 1.0),
+                        blurRadius: 3.0,
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 150,
+                  height:20,
+                  child: LinearProgressIndicator(
+                    value: _hungerLevel,
+                    backgroundColor: Colors.grey[300],
+                    color: Colors.red,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Felicidade',
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        offset: Offset(1.0, 1.0),
+                        blurRadius: 3.0,
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 150,
+                  height:20,
+                  child: LinearProgressIndicator(
+                    value: _happinessLevel,
+                    backgroundColor: Colors.grey[300],
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: FloatingActionButton(
+              onPressed: () {
+                _showFoodOptions(context);
+              },
+              backgroundColor: Colors.blue,
+              child: const Icon(Icons.fastfood),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomAppBar(
         child: Container(
           height: 50.0,
-          color: Color(0xFFFFC0CB), // Cor de fundo rosa bebê para o Footer
+          color: const Color(0xFFFFC0CB), // Cor de fundo rosa bebê para o Footer
           alignment: Alignment.center,
-          child: Text(
+          child: const Text(
             'Tony Tony Chopper',
             style: TextStyle(color: Colors.white, fontSize: 16),
           ),
@@ -98,83 +242,3 @@ class HomePage extends StatelessWidget {
   }
 }
 
-// Página da Loja
-class LojaPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Loja'),
-        backgroundColor: Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
-      ),
-      body: Center(
-        child: Text('Página da Loja', style: TextStyle(fontSize: 24)),
-      ),
-    );
-  }
-}
-
-// Página do Inventário
-class InventarioPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Inventário'),
-        backgroundColor: Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
-      ),
-      body: Center(
-        child: Text('Página do Inventário', style: TextStyle(fontSize: 24)),
-      ),
-    );
-  }
-}
-
-// Página do Perfil
-class PerfilPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Perfil'),
-        backgroundColor: Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
-      ),
-      body: Center(
-        child: Text('Página do Perfil', style: TextStyle(fontSize: 24)),
-      ),
-    );
-  }
-}
-
-
-// Página do mini-jogo
-class GamePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Mini-Jogo'),
-        backgroundColor: Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
-      ),
-      body: Center(
-        child: Text('Página do Mini-Jogo', style: TextStyle(fontSize: 24)),
-      ),
-    );
-  }
-}
-
-// Página do Perfil
-class TransformationPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Transformações'),
-        backgroundColor: Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
-      ),
-      body: Center(
-        child: Text('Página das Transformações', style: TextStyle(fontSize: 24)),
-      ),
-    );
-  }
-}
