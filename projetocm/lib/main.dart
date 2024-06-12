@@ -34,6 +34,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   double _hungerLevel = 0.5;
   final double _happinessLevel = 0.8;
+  double _money = 100.0;
 
   void _showFoodOptions(BuildContext context) {
     showModalBottomSheet(
@@ -85,19 +86,41 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tony Tony Chopper'),
         backgroundColor: const Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
         actions: [
+          Row(
+            children: [
+              Text(
+                '$_money', // Exibe o valor do dinheiro
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Image.asset(
+                'assets/moeda.png', // Caminho da imagem da moeda
+                width: 30, // Tamanho da imagem da moeda
+                height: 30, // Tamanho da imagem da moeda
+              ),
+              const SizedBox(width: 10),
+            ],
+          ),
           IconButton(
-            icon: const Icon(Icons.store),
+            icon: const Icon(Icons.store), // Ícone da loja
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const LojaPage()),
+                MaterialPageRoute(
+                  builder: (context) => LojaPage(
+                    money: _money, // Passa a quantidade de dinheiro para a loja
+                    onPurchase: (cost) {
+                      setState(() {
+                        _money -= cost; // Atualiza o dinheiro ao comprar algo
+                    });
+                  }
+                )),
               );
             },
           ),
