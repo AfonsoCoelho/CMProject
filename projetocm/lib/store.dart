@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'main.dart';
 
-class LojaPage extends StatefulWidget {
+class LojaPage extends StatelessWidget {
   final double money; // Valor do dinheiro
-  final Function(double) onPurchase; // Função para comprar itens
+  final Function(int) onPurchase; // Função para comprar itens
+  final List<int> roupasCompradas; // Lista de roupas compradas
 
-  const LojaPage({Key? key, required this.money, required this.onPurchase})
-      : super(key: key);
-
-  @override
-  _LojaPageState createState() => _LojaPageState();
-}
-
-class _LojaPageState extends State<LojaPage> {
-  List<String> roupasCompradas = []; // Lista de roupas compradas
+  const LojaPage({
+    Key? key,
+    required this.money,
+    required this.onPurchase,
+    required this.roupasCompradas,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class _LojaPageState extends State<LojaPage> {
           Row(
             children: [
               Text(
-                '\$${widget.money}', // Exibe o valor do dinheiro
+                '\$$money', // Exibe o valor do dinheiro
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Image.asset(
@@ -81,23 +80,20 @@ class _LojaPageState extends State<LojaPage> {
                         spacing: 10,
                         runSpacing: 10,
                         children: List.generate(6, (index) {
-                          final itemPrice = 100.0;
-                          final canBuy = widget.money >= itemPrice;
                           return SizedBox(
                             width: 100,
                             height: 150,
                             child: Column(
                               children: [
                                 ElevatedButton(
-                                  onPressed: canBuy
+                                  onPressed: (money >= 100 &&
+                                          !roupasCompradas.contains(index))
                                       ? () {
-                                          // Lógica para comprar a roupa index + 1
-                                          setState(() {
-                                            roupasCompradas.add('roupa${index + 1}.png');
-                                            widget.onPurchase(itemPrice);
-                                          });
+                                          onPurchase(index);
+                                          chopperImageNotifier.value =
+                                              'assets/roupa${index + 1}.png'; // Atualiza a imagem do Chopper na loja
                                         }
-                                      : null,
+                                      : null, // Desabilita o botão se a roupa já foi comprada ou o dinheiro for insuficiente
                                   style: ElevatedButton.styleFrom(
                                     padding: EdgeInsets.zero,
                                   ),
@@ -110,11 +106,11 @@ class _LojaPageState extends State<LojaPage> {
                                   ),
                                 ),
                                 Text(
-                                  '\$$itemPrice', // Preço da roupa
+                                  '\$100', // Preço da roupa
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: canBuy ? Colors.black : Colors.grey,
+                                    color: Colors.black,
                                   ),
                                 ),
                               ],
@@ -128,10 +124,15 @@ class _LojaPageState extends State<LojaPage> {
                 const SizedBox(width: 20), // Espaço entre o grid e o Chopper
                 Expanded(
                   flex: 1,
-                  child: Image.asset(
-                    'assets/chopper1.png',
-                    width: 300, // Ajuste conforme necessário
-                    height: 300, // Ajuste conforme necessário
+                  child: ValueListenableBuilder<String>(
+                    valueListenable: chopperImageNotifier,
+                    builder: (context, chopperImage, child) {
+                      return Image.asset(
+                        chopperImage, // Usa a imagem atual do Chopper
+                        width: 300,
+                        height: 300,
+                      );
+                    },
                   ),
                 ),
               ],

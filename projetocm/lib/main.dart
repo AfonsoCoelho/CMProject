@@ -5,12 +5,15 @@ import 'profile.dart';
 import 'minigame.dart';
 import 'transformation.dart';
 
+// Global ValueNotifier to manage Chopper's image
+final chopperImageNotifier = ValueNotifier<String>('assets/chopper1.png');
+
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -34,7 +37,23 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   double _hungerLevel = 0.5;
   final double _happinessLevel = 0.8;
-  double _money = 100.0;
+  double _money = 500.0;
+  List<int> roupasCompradas = [];
+  int roupaAtual = 0;
+
+  void onPurchase(int index) {
+    setState(() {
+      if (_money >= 100 && !roupasCompradas.contains(index)) {
+        _money -= 100; // Deduz $100 por compra
+        roupasCompradas.add(index); // Adiciona o índice da roupa comprada
+      }
+    });
+  }
+
+  // Função para equipar uma roupa no Chopper
+  void equiparRoupa(int index) {
+    chopperImageNotifier.value = 'assets/roupa${index + 1}.png'; // Atualiza a imagem do Chopper
+  }
 
   void _showFoodOptions(BuildContext context) {
     showModalBottomSheet(
@@ -66,7 +85,7 @@ class _HomePageState extends State<HomePage> {
                   });
                   Navigator.pop(context);
                 },
-                child: Image.asset('assets/comida2.png'), // Imagem da comida 1
+                child: Image.asset('assets/comida2.png'), // Imagem da comida 2
               ),
               ElevatedButton(
                 onPressed: () {
@@ -77,7 +96,7 @@ class _HomePageState extends State<HomePage> {
                   });
                   Navigator.pop(context);
                 },
-                child: Image.asset('assets/comida3.png'), // Imagem da comida 1
+                child: Image.asset('assets/comida3.png'), // Imagem da comida 3
               ),
             ],
           ),
@@ -97,7 +116,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text(
                 '$_money', // Exibe o valor do dinheiro
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Image.asset(
                 'assets/moeda.png', // Caminho da imagem da moeda
@@ -115,12 +134,10 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(
                   builder: (context) => LojaPage(
                     money: _money, // Passa a quantidade de dinheiro para a loja
-                    onPurchase: (cost) {
-                      setState(() {
-                        _money -= cost; // Atualiza o dinheiro ao comprar algo
-                    });
-                  }
-                )),
+                    onPurchase: onPurchase,
+                    roupasCompradas: roupasCompradas,
+                  ),
+                ),
               );
             },
           ),
@@ -129,7 +146,12 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const InventarioPage()),
+                MaterialPageRoute(
+                  builder: (context) => InventarioPage(
+                    roupasCompradas: roupasCompradas,
+                    equiparRoupa: equiparRoupa,
+                  ),
+                ),
               );
             },
           ),
@@ -173,10 +195,15 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Center(
-            child: Image.asset(
-              'assets/chopper1.png',
-              width: 600,
-              height: 600,
+            child: ValueListenableBuilder<String>(
+              valueListenable: chopperImageNotifier,
+              builder: (context, chopperImage, child) {
+                return Image.asset(
+                  chopperImage,
+                  width: 600,
+                  height: 600,
+                );
+              },
             ),
           ),
           Positioned(
@@ -202,7 +229,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(
                   width: 150,
-                  height:20,
+                  height: 20,
                   child: LinearProgressIndicator(
                     value: _hungerLevel,
                     backgroundColor: Colors.grey[300],
@@ -227,7 +254,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(
                   width: 150,
-                  height:20,
+                  height: 20,
                   child: LinearProgressIndicator(
                     value: _happinessLevel,
                     backgroundColor: Colors.grey[300],
@@ -264,4 +291,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
