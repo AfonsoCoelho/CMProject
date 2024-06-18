@@ -1,14 +1,23 @@
+// main.dart
+
 import 'package:flutter/material.dart';
 import 'store.dart';
 import 'inventory.dart';
 import 'profile.dart';
 import 'minigame.dart';
 import 'transformation.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 // Global ValueNotifier to manage Chopper's image
 final chopperImageNotifier = ValueNotifier<String>('assets/chopper1.png');
+final ValueNotifier<double> moneyNotifier = ValueNotifier<double>(500.0);
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(const MyApp());
 }
 
@@ -114,16 +123,25 @@ class _HomePageState extends State<HomePage> {
         actions: [
           Row(
             children: [
-              Text(
-                '$_money', // Exibe o valor do dinheiro
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ValueListenableBuilder<double>(
+                valueListenable: moneyNotifier,
+                builder: (context, money, child) {
+                  return Row(
+                    children: [
+                      Text(
+                        '\$$money', // Exibe o valor do dinheiro
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      Image.asset(
+                        'assets/moeda.png', // Caminho da imagem da moeda
+                        width: 30, // Tamanho da imagem da moeda
+                        height: 30, // Tamanho da imagem da moeda
+                      ),
+                      const SizedBox(width: 10),
+                    ],
+                  );
+                },
               ),
-              Image.asset(
-                'assets/moeda.png', // Caminho da imagem da moeda
-                width: 30, // Tamanho da imagem da moeda
-                height: 30, // Tamanho da imagem da moeda
-              ),
-              const SizedBox(width: 10),
             ],
           ),
           IconButton(
@@ -133,7 +151,6 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => LojaPage(
-                    money: _money, // Passa a quantidade de dinheiro para a loja
                     onPurchase: onPurchase,
                     roupasCompradas: roupasCompradas,
                   ),

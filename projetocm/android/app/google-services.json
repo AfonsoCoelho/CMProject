@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "803711704029",
+    "project_id": "chopper-mobile",
+    "storage_bucket": "chopper-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803711704029:android:130428639b5b2f96273434",
+        "android_client_info": {
+          "package_name": "com.example.projetocm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJn8vt-FnhbzdbjjAHKJVIl0U6PJKFhRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803711704029:android:be2b55926ff38d5b273434",
+        "android_client_info": {
+          "package_name": "pt.ips.lei_cm.ChopperMobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJn8vt-FnhbzdbjjAHKJVIl0U6PJKFhRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

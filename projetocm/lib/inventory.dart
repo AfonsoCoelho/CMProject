@@ -1,9 +1,11 @@
+// inventory.dart
+
 import 'package:flutter/material.dart';
 import 'main.dart';
 
 class InventarioPage extends StatelessWidget {
   final List<int> roupasCompradas; // Lista de roupas compradas
-  final Function(int) equiparRoupa; // Função para equipar uma roupa no Chopper
+  final Function(int) equiparRoupa; // Função para equipar roupa
 
   const InventarioPage({
     Key? key,
@@ -16,7 +18,28 @@ class InventarioPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inventário'),
-        backgroundColor: const Color(0xFFFFC0CB),
+        backgroundColor: const Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
+        actions: [
+          ValueListenableBuilder<double>(
+            valueListenable: moneyNotifier,
+            builder: (context, money, child) {
+              return Row(
+                children: [
+                  Text(
+                    '\$$money', // Exibe o valor do dinheiro
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Image.asset(
+                    'assets/moeda.png', // Caminho da imagem da moeda
+                    width: 30, // Tamanho da imagem da moeda
+                    height: 30, // Tamanho da imagem da moeda
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              );
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -29,33 +52,41 @@ class InventarioPage extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
+          // Conteúdo da página
+          SingleChildScrollView(
             padding: const EdgeInsets.all(20.0),
-            child: Row(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Roupas Compradas:',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Wrap(
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: roupasCompradas.map((index) {
-                          return ElevatedButton(
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFC0CB), // Cor de fundo rosa bebê
+                    borderRadius: BorderRadius.circular(10), // Borda arredondada
+                  ),
+                  child: const Text(
+                    'Escolha uma roupa para equipar:',
+                    style: TextStyle(
+                      fontSize: 20, // Tamanho do texto
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Botões com imagens organizados em uma grade 3x2
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: roupasCompradas.map((index) {
+                    return SizedBox(
+                      width: 100,
+                      height: 150,
+                      child: Column(
+                        children: [
+                          ElevatedButton(
                             onPressed: () {
-                              equiparRoupa(index); // Equipa a roupa selecionada
-                              Navigator.pop(context); // Retorna à página principal
+                              equiparRoupa(index);
                             },
                             style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
@@ -63,33 +94,40 @@ class InventarioPage extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Image.asset(
-                                'assets/roupa${index + 1}.png', // Caminho da imagem da roupa
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
+                                'assets/roupa${index + 1}.png', // Substitua pelo caminho das imagens de roupa
+                                fit: BoxFit.cover, // Ajusta a imagem para cobrir todo o botão
                               ),
                             ),
-                          );
-                        }).toList(),
+                          ),
+                          Text(
+                            'Roupa ${index + 1}', // Nome da roupa
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 20), // Espaço entre o grid e o Chopper
-                Expanded(
-                  flex: 1,
-                  child: ValueListenableBuilder<String>(
-                    valueListenable: chopperImageNotifier,
-                    builder: (context, chopperImage, child) {
-                      return Image.asset(
-                        chopperImage, // Usa a imagem atual do Chopper
-                        width: 300,
-                        height: 300,
-                      );
-                    },
-                  ),
+                    );
+                  }).toList(),
                 ),
               ],
+            ),
+          ),
+          // Adicionar o Chopper no lado direito da tela
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: ValueListenableBuilder<String>(
+              valueListenable: chopperImageNotifier,
+              builder: (context, chopperImage, child) {
+                return Image.asset(
+                  chopperImage, // Usa a imagem atual do Chopper
+                  width: 150,
+                  height: 150,
+                );
+              },
             ),
           ),
         ],

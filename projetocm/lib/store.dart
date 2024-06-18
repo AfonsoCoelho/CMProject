@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'main.dart';
 
 class LojaPage extends StatelessWidget {
-  final double money; // Valor do dinheiro
   final Function(int) onPurchase; // Função para comprar itens
   final List<int> roupasCompradas; // Lista de roupas compradas
 
   const LojaPage({
     Key? key,
-    required this.money,
     required this.onPurchase,
     required this.roupasCompradas,
   }) : super(key: key);
@@ -20,19 +18,25 @@ class LojaPage extends StatelessWidget {
         title: const Text('Loja'),
         backgroundColor: const Color(0xFFFFC0CB), // Cor de fundo rosa bebê para a AppBar
         actions: [
-          Row(
-            children: [
-              Text(
-                '\$$money', // Exibe o valor do dinheiro
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Image.asset(
-                'assets/moeda.png', // Caminho da imagem da moeda
-                width: 30, // Tamanho da imagem da moeda
-                height: 30, // Tamanho da imagem da moeda
-              ),
-              const SizedBox(width: 10),
-            ],
+          ValueListenableBuilder<double>(
+            valueListenable: moneyNotifier,
+            builder: (context, money, child) {
+              return Row(
+                children: [
+                  Text(
+                    '\$$money', // Exibe o valor do dinheiro
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Image.asset(
+                    'assets/moeda.png', // Caminho da imagem da moeda
+                    width: 30, // Tamanho da imagem da moeda
+                    height: 30, // Tamanho da imagem da moeda
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -86,12 +90,19 @@ class LojaPage extends StatelessWidget {
                             child: Column(
                               children: [
                                 ElevatedButton(
-                                  onPressed: (money >= 100 &&
+                                  onPressed: (moneyNotifier.value >= 100 &&
                                           !roupasCompradas.contains(index))
                                       ? () {
-                                          onPurchase(index);
+                                          moneyNotifier.value -= 100; // Deduz o valor da compra do dinheiro global
+                                          onPurchase(index); // Chama a função de compra
                                           chopperImageNotifier.value =
                                               'assets/roupa${index + 1}.png'; // Atualiza a imagem do Chopper na loja
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('Roupa comprada com sucesso!'),
+                                              duration: Duration(seconds: 1),
+                                            ),
+                                          );
                                         }
                                       : null, // Desabilita o botão se a roupa já foi comprada ou o dinheiro for insuficiente
                                   style: ElevatedButton.styleFrom(
@@ -105,10 +116,11 @@ class LojaPage extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Text(
+                                const SizedBox(height: 5), // Espaço entre o botão e o texto do preço
+                                const Text(
                                   '\$100', // Preço da roupa
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),
