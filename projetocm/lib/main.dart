@@ -1,6 +1,7 @@
 // main.dart
 
 import 'package:flutter/material.dart';
+import 'package:projetocm/login.dart';
 import 'store.dart';
 import 'inventory.dart';
 import 'profile.dart';
@@ -8,6 +9,7 @@ import 'minigame.dart';
 import 'transformation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+
 
 // Global ValueNotifier to manage Chopper's image
 final chopperImageNotifier = ValueNotifier<String>('assets/chopper1.png');
@@ -31,7 +33,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: const LoginPage(),
+      routes: {
+        '/home': (context) => const HomePage(), // Define a rota para a página principal
+      },
     );
   }
 }
@@ -172,6 +177,7 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
+
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {

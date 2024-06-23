@@ -48,7 +48,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
-
+image_picker: ^0.8.4+1 # Verifique a versão mais recente disponível
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -107,3 +107,8 @@ flutter:
     - assets/roupa5.png
     - assets/roupa6.png
     - assets/moeda.png
+    - assets/luffy.png
+    - assets/zoro.png
+    - assets/nami.png
+    - assets/ussop.png
+    - assets/default.png
